@@ -8,8 +8,26 @@ public class FlightTests
     [Fact]
     public void BookingReducesSeatCount()
     {
-        Flight flight = new(seatCapacity: 3);       // Given
-        flight.Book("example@test.com", 1);         // When
-        flight.remainingSeatCount.Should().Be(2);   // Then
+        // Given
+        Flight flight = new(seatCapacity: 3);     
+        
+        // When
+        flight.Book("passenger@example.com", 1);         
+        
+        // Then
+        flight.remainingSeatCount.Should().Be(2);  
+    }
+
+    [Fact]
+    public void AvoidOverbooking()
+    {
+        // Given
+        Flight flight = new(seatCapacity: 3);
+        
+        // When
+        object? error = flight.Book("passenger@example.com", 4);
+
+        // Then
+        error.Should().BeOfType<OverbookingError>();
     }
 }
