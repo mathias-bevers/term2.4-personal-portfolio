@@ -30,4 +30,17 @@ public class FlightTests
         // Then
         error.Should().BeOfType<OverbookingError>();
     }
+
+    [Fact]
+    public void AvoidInvalidEmail()
+    {
+        // Given
+        Flight flight = new(seatCapacity: 3);
+
+        // When 
+        object? error = flight.Book("this is not an email address", 1);
+
+        // Then
+        error.Should().BeOfType<InvalidEmailError>();
+    }
 }
