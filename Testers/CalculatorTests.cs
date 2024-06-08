@@ -1,7 +1,7 @@
 using FluentAssertions;
-using Domain;
+using Domain.Tests;
 
-namespace CalculatorTest;
+namespace Testers;
 
 public class CalculatorTests
 {
