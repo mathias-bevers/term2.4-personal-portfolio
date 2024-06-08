@@ -1,4 +1,4 @@
-﻿namespace Domain.Tests;
+﻿namespace Domain;
 
 public class Calculator
 {

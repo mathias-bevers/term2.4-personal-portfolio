@@ -1,5 +1,5 @@
 using FluentAssertions;
-using Domain.Tests;
+using Domain;
 
 namespace Testers;
 

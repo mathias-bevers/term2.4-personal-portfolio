@@ -1,4 +1,4 @@
-using Domain.Tests;
+using Domain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Controllers;
