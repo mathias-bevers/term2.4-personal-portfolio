@@ -6,10 +6,5 @@ namespace Web.Controllers;
 [ApiController, Route("[controller]")]
 public class CalculatorController : ControllerBase
 {
-    [HttpGet("Add/{left}/{right}")]
-    public int Get(int left, int right)
-    {
-        Calculator calculator = new();
-        return calculator.Sum(left, right);
-    }
+    [HttpGet("Add/{left}/{right}")] public int Get(int left, int right) => new Calculator().Sum(left, right);
 }
