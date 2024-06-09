@@ -165,11 +165,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 322771917}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8119463f4f1641ba85e44a22122ebb82, type: 3}
+  m_Script: {fileID: 11500000, guid: 22b8f3a70ca5f2c1bac92dce1a9689d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   gridSize: {x: 14, y: 20}
-  cellPrefab: {fileID: 4403198022210463096, guid: 29afad08f310e11bda12b4d140c1c36f, type: 3}
+  cellPrefab: {fileID: 0}
 --- !u!212 &322771920
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -211,7 +211,7 @@ SpriteRenderer:
   m_SortingLayerID: -1059378601
   m_SortingLayer: -1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: ba0a6b23f52512d909b67434ed9809b2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ad2827e406d3fd9d49ce32f0e678b407, type: 3}
   m_Color: {r: 0.44635296, g: 0.44635296, b: 0.44635296, a: 1}
   m_FlipX: 0
   m_FlipY: 0

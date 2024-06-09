@@ -15,10 +15,9 @@ public class PlayTester
         
         // When
         field.CreateGrid(5,6);
-        
         yield return null;
         
         //Then
-        Assert.NotNull(field.GetCellFromPosition(5,6));
+        Assert.NotNull(field.GetCellFromPosition(4,5));
     }
 }

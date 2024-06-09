@@ -6,9 +6,8 @@ namespace MineSweeper
     public class PlayingField : MonoBehaviour
     {
         [SerializeField] private Vector2Int gridSize;
-        [SerializeField] private GameObject cellPrefab; //TODO: Change to Cell
-
-        private GameObject[,] grid;
+        
+        private Cell[,] grid;
         private Transform cachedTransform;
         
         private void Awake()
@@ -19,25 +18,27 @@ namespace MineSweeper
 
         private void CreateGrid()
         {
-            grid = new GameObject[gridSize.x, gridSize.y];
+            grid = new Cell[gridSize.x, gridSize.y];
             
             Vector2 cellSize = new (1f/gridSize.x, 1f/gridSize.y);
             Vector2 topRight = new (-(0.5f - (cellSize.x * 0.5f)), 0.5f - (cellSize.y * 0.5f));
-            
-            Debug.Log($"{cellSize}\t{topRight}");
             
             for (int y = 0; y < gridSize.y; ++y)
             for (int x = 0; x < gridSize.x; ++x)
             {
                 Vector2 position = topRight + new Vector2(cellSize.x * x, -(cellSize.y * y));
-                GameObject cell = Instantiate(cellPrefab, cachedTransform);
-                cell.transform.localScale = cellSize;
-                cell.transform.SetLocalPositionAndRotation(position, Quaternion.identity);
+                Cell cell = Cell.Create(new Vector2Int(x, y), cachedTransform, position, cellSize);
                 grid[x, y] = cell;
             }
         }
 
-        public GameObject GetCellFromPosition(int x, int y) => grid[x, y];
+        public Cell GetCellFromPosition(int x, int y)
+        {
+            if (x >= grid.GetLength(0)) { throw new ArgumentOutOfRangeException(nameof(x), grid.GetLength(0), ""); }
+            if (y >= grid.GetLength(1)) { throw new ArgumentOutOfRangeException(nameof(x), grid.GetLength(1), ""); }
+            
+            return grid[x,y];
+        }
 
         public void CreateGrid(int width, int height)
         {
