@@ -1,15 +1,19 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace MineSweeper
 {
     public class PlayingField : MonoBehaviour
     {
-        [SerializeField] private Vector2Int gridSize;
-        
+        [SerializeField] private Vector2Int gridDimensions;
+
+        private int gridSize => gridDimensions.x * gridDimensions.y;
+
         private Cell[,] grid;
         private Transform cachedTransform;
-        
+
         private void Awake()
         {
             cachedTransform = transform;
@@ -18,36 +22,60 @@ namespace MineSweeper
 
         private void CreateGrid()
         {
-            grid = new Cell[gridSize.x, gridSize.y];
-            
-            Vector2 cellSize = new (1f/gridSize.x, 1f/gridSize.y);
-            Vector2 topRight = new (-(0.5f - (cellSize.x * 0.5f)), 0.5f - (cellSize.y * 0.5f));
-            
-            for (int y = 0; y < gridSize.y; ++y)
-            for (int x = 0; x < gridSize.x; ++x)
+            cachedTransform.RemoveAllChildren();
+
+            grid = new Cell[gridDimensions.x, gridDimensions.y];
+            int mineAmount = Mathf.RoundToInt(gridSize * 0.1f);
+            int[] mineLocations = GetLocationsArray(mineAmount, gridSize);
+
+            Vector2 cellSize = new(1f / gridDimensions.x, 1f / gridDimensions.y);
+            Vector2 topRight = new(-(0.5f - cellSize.x * 0.5f), 0.5f - cellSize.y * 0.5f);
+
+            for (int x = 0; x < gridDimensions.x; ++x)
+            for (int y = 0; y < gridDimensions.y; ++y)
             {
-                Vector2 position = topRight + new Vector2(cellSize.x * x, -(cellSize.y * y));
-                Cell cell = Cell.Create(new Vector2Int(x, y), cachedTransform, position, cellSize);
+
+                Vector2 worldPosition = topRight + new Vector2(cellSize.x * x, -(cellSize.y * y));
+                bool isBomb = Array.IndexOf(mineLocations, PositionToOneDimension(x, y)) >= 0;
+
+                Cell cell = Cell.Create(cachedTransform, worldPosition, cellSize, isBomb);
+
                 grid[x, y] = cell;
             }
         }
 
+        private int[] GetLocationsArray(int mineAmount, int max)
+        {
+            int[] array = new int [mineAmount];
+            for (int i = 0; i < array.Length; ++i)
+            {
+                int r;
+                
+                do { r = Random.Range(0, max); } while (Array.IndexOf(array, r) >= 0);
+
+                array[i] = r;
+            }
+
+            return array;
+        }
+
+        private int PositionToOneDimension(int row, int column) =>
+            gridDimensions.x * row + column;
+
+
         public Cell GetCellFromPosition(int x, int y)
         {
             if (x >= grid.GetLength(0)) { throw new ArgumentOutOfRangeException(nameof(x), grid.GetLength(0), ""); }
+
             if (y >= grid.GetLength(1)) { throw new ArgumentOutOfRangeException(nameof(x), grid.GetLength(1), ""); }
-            
-            return grid[x,y];
+
+            return grid[x, y];
         }
+
 
         public void CreateGrid(int width, int height)
         {
-            for (int i = cachedTransform.childCount - 1; i >= 0; --i)
-            {
-                Destroy(cachedTransform.GetChild(i).gameObject);    
-            }
-            
-            gridSize = new Vector2Int(width, height);
+            gridDimensions = new Vector2Int(width, height);
             CreateGrid();
         }
     }
