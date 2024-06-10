@@ -7,12 +7,17 @@ using UnityEngine.TestTools;
 public class PlayTester
 {
     [UnityTest]
-    public IEnumerator PlayTesterWithEnumeratorPasses()
+    public IEnumerator Test5By6PlayingField()
     {
+        // Given
         GameObject go = new ();
-        PlayTest playTest = go.AddComponent<PlayTest>();
+        PlayingField field = go.AddComponent<PlayingField>();
         
-        yield return new WaitForSeconds(PlayTest.DELAY * 1.5f);
-        Assert.AreEqual(10, playTest.value);
+        // When
+        field.CreateGrid(5,6);
+        yield return null;
+        
+        //Then
+        Assert.NotNull(field.GetCellFromPosition(4,5));
     }
 }
