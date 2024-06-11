@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace MineSweeper
@@ -11,43 +12,54 @@ namespace MineSweeper
         private int gridSize => gridDimensions.x * gridDimensions.y;
 
         public int mineCount { get; private set; }
+        public Transform cachedTransform { get; private set; }
 
         private Cell[,] grid;
-        private Transform cachedTransform;
 
 
-        private void Awake() { cachedTransform = transform; }
+        private void Awake()
+        {
+            cachedTransform = transform;
+        }
 
         private int PositionToOneDimension(int row, int column) =>
             gridDimensions.x * row + column;
 
-        private Cell[] GetNeighbors(int x, int y)
+
+        public Cell[] GetNeighbors(int x, int y, bool excludeDiagonal = false)
         {
             List<Cell> neighbors = new();
 
-            for (int i = -1; i <= 1; ++i)
-            for (int ii = -1; ii <= 1; ++ii)
+            if (!excludeDiagonal)
             {
-                if (i == 0 && ii == 0) { continue; }
+                for (int i = -1; i <= 1; ++i)
+                for (int ii = -1; ii <= 1; ++ii)
+                {
+                    if (i == 0 && ii == 0) { continue; }
 
-                Vector2Int current = new(x + i, y + ii);
+                    Cell neighbor = GetCellFromPosition(x + i, y + ii);
 
-                if (current.x < 0 || current.x >= gridDimensions.x) { continue; }
-
-                if (current.y < 0 || current.y >= gridDimensions.y) { continue; }
-
-                neighbors.Add(GetCellFromPosition(current.x, current.y));
+                    neighbors.Add(neighbor);
+                }
+            }
+            else
+            {
+                neighbors.Add(GetCellFromPosition(x, y - 1));
+                neighbors.Add(GetCellFromPosition(x - 1, y));
+                neighbors.Add(GetCellFromPosition(x + 1, y));
+                neighbors.Add(GetCellFromPosition(x, y + 1));
             }
 
+            neighbors.RemoveAll(neighbor => ReferenceEquals(null, neighbor));
             return neighbors.ToArray();
         }
 
-
+        [CanBeNull]
         public Cell GetCellFromPosition(int x, int y)
         {
-            if (x >= grid.GetLength(0)) { throw new ArgumentOutOfRangeException(nameof(x), grid.GetLength(0), ""); }
+            if (x < 0 || x >= grid.GetLength(0)) { return null; }
 
-            if (y >= grid.GetLength(1)) { throw new ArgumentOutOfRangeException(nameof(x), grid.GetLength(1), ""); }
+            if (y < 0 || y >= grid.GetLength(1)) { return null; }
 
             return grid[x, y];
         }
@@ -71,7 +83,7 @@ namespace MineSweeper
                 Vector2 worldPosition = topRight + new Vector2(cellSize.x * x, -(cellSize.y * y));
                 bool isBomb = Array.IndexOf(mineLocations, PositionToOneDimension(x, y)) >= 0;
 
-                Cell cell = Cell.Create(cachedTransform, worldPosition, cellSize, isBomb);
+                Cell cell = Cell.Create(this, new Vector2Int(x, y), worldPosition, cellSize, isBomb);
 
                 grid[x, y] = cell;
             }
