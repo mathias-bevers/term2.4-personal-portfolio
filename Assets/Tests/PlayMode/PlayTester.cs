@@ -18,6 +18,7 @@ public class PlayTester
         yield return null;
         
         //Then
-        Assert.NotNull(field.GetCellFromPosition(4,5));
+        Assert.NotNull(field.GetCellFromPosition(4,5)); // The last cell from the array. 
+        Assert.AreEqual(field.mineCount, 3); // 5 * 6 = 30 / 10 = 3.
     }
 }
