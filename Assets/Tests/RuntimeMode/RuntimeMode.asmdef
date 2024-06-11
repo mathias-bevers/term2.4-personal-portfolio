@@ -1,10 +1,9 @@
 {
-    "name": "PlayMode",
+    "name": "RuntimeMode",
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "GameplayCode",
         "MineSweeper"
     ],
     "includePlatforms": [],

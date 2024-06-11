@@ -10,7 +10,7 @@ namespace MineSweeper
     {
         [SerializeField, Expandable] private CellSpriteSet spriteSet;
 
-        private bool isBomb;
+        public bool isBomb { get; private set; }
         private int neighborCount;
         private new SpriteRenderer renderer;
         private Transform cachedTransform;
@@ -46,14 +46,11 @@ namespace MineSweeper
             cachedTransform.SetParent(parent);
             cachedTransform.localScale = scale;
             cachedTransform.SetLocalPositionAndRotation(worldPosition, Quaternion.identity);
-
-            renderer.sprite = spriteSet.unopened;
+            
+            renderer.sprite = spriteSet.unopened;  
         }
 
-        public void SetNeighborCount(int neighorCount)
-        {
-            throw new NotImplementedException();
-        }
+        public void SetNearBombCount(int neighborCount) => this.neighborCount = neighborCount;
 
         private void OpenSpace()
         {
@@ -64,7 +61,6 @@ namespace MineSweeper
             else
             {
                 renderer.sprite = spriteSet.exploded;
-                Debug.Log("BOOOOOOM!");
                 throw new NotImplementedException("Game over not implemented!");
             }
         }
