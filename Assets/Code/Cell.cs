@@ -11,9 +11,14 @@ namespace MineSweeper
         [SerializeField, Expandable] private CellSpriteSet spriteSet;
 
         public bool isBomb { get; private set; }
+
         private int neighborCount;
+        private PlayingField parent;
         private new SpriteRenderer renderer;
+        private State state;
         private Transform cachedTransform;
+        private Vector2Int gridPosition;
+
 
         public void OnPointerClick(PointerEventData eventData)
         {
@@ -30,38 +35,51 @@ namespace MineSweeper
             }
         }
 
-        public static Cell Create(Transform parent, Vector2 worldPosition, Vector2 scale, bool isBomb)
+        public static Cell Create(PlayingField parent, Vector2Int gridPosition, Vector2 worldPosition, Vector2 scale,
+            bool isBomb)
         {
             Cell cell = Instantiate(GameAssets.instance.cell);
             cell.cachedTransform = cell.transform;
             cell.renderer = cell.GetComponent<SpriteRenderer>();
-            cell.Initialize(parent, worldPosition, scale, isBomb);
+            cell.Initialize(parent, gridPosition, worldPosition, scale, isBomb);
             return cell;
         }
 
-        private void Initialize(Transform parent, Vector2 worldPosition, Vector2 scale, bool isBomb)
+        private void Initialize(PlayingField parent, Vector2Int gridPosition, Vector2 worldPosition, Vector2 scale,
+            bool isBomb)
         {
+            this.parent = parent;
             this.isBomb = isBomb;
+            this.gridPosition = gridPosition;
 
-            cachedTransform.SetParent(parent);
+            cachedTransform.SetParent(parent.cachedTransform);
             cachedTransform.localScale = scale;
             cachedTransform.SetLocalPositionAndRotation(worldPosition, Quaternion.identity);
-            
-            renderer.sprite = spriteSet.unopened;  
+
+            renderer.sprite = spriteSet.unopened;
         }
 
         public void SetNearBombCount(int neighborCount) => this.neighborCount = neighborCount;
 
         private void OpenSpace()
         {
-            if (!isBomb)
-            {
-                renderer.sprite = spriteSet.numberSprites[neighborCount];
-            }
-            else
+            if (state != State.Closed) { return; }
+
+            state = State.Opened;
+
+            if (isBomb)
             {
                 renderer.sprite = spriteSet.exploded;
-                throw new NotImplementedException("Game over not implemented!");
+                throw new NotImplementedException("GameOver not implemented");
+            }
+
+            renderer.sprite = spriteSet.numberSprites[neighborCount];
+
+            if (neighborCount != 0) { return; }
+
+            foreach (Cell neighbor in parent.GetNeighbors(gridPosition.x, gridPosition.y, true))
+            {
+                neighbor.OpenSpace();
             }
         }
 
@@ -69,5 +87,7 @@ namespace MineSweeper
         {
             throw new NotImplementedException();
         }
+
+        private enum State { Closed, Opened, Marked }
     }
 }
