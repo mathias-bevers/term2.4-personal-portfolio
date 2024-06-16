@@ -9,6 +9,7 @@ namespace MineSweeper
     public class Cell : MonoBehaviour, IPointerClickHandler
     {
         [SerializeField, Expandable] private CellSpriteSet spriteSet;
+        public event Action revealedEvent; 
 
         public bool isBomb { get; private set; }
         public State state { get; private set; }
@@ -74,6 +75,7 @@ namespace MineSweeper
             }
 
             renderer.sprite = spriteSet.numberSprites[neighborCount];
+            revealedEvent?.Invoke();
 
             if (neighborCount != 0) { return; }
 
