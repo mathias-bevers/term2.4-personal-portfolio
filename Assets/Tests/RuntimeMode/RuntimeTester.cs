@@ -1,8 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using MineSweeper;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.TestTools;
 
 public class RuntimeTester
@@ -10,19 +10,40 @@ public class RuntimeTester
     // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
     // `yield return null;` to skip a frame.
     [UnityTest]
-    public IEnumerator Test5By6PlayingField()
+    public IEnumerator Test10By10PlayingField()
     {
-        // Given
-        GameObject go = new (); // Create a new game objects
+        #region Given
+
+        GameObject go = new(); // Create a new game objects
         PlayingField field = go.AddComponent<PlayingField>(); // Add a playing field instance to the game object. 
-            
-        // When
-        field.CreateGrid(new Vector2Int(5,6)); // Create a new grid of 5 * 6;
-        yield return null; // Skip a frame
-            
-        // Then
-        // Use the Assert class to test conditions.
-        Assert.NotNull(field.GetCellFromPosition(4,5)); // The last cell from the array. 
-        Assert.AreEqual(field.mineCount, 3); // 5 * 6 = 30 / 10 = 3.
+
+        #endregion
+
+        #region When
+
+        // Set the mine percentage to 20%.
+        field.minePercentage = 20;
+        // Create a new grid of 10 * 10;
+        field.CreateGrid(10);
+        // Skip a frame
+        yield return null;
+
+        // Get the top right cell.
+        Cell cell = field.GetCellFromPosition(0, 0);
+        // Simulate a right click on the cell if it exists.
+        cell?.OnPointerClick(new PointerEventData(EventSystem.current) { button = PointerEventData.InputButton.Right });
+
+        #endregion
+
+        #region Then
+
+        // The last cell should be 9,9 since the grid is 10 * 10.
+        Assert.NotNull(field.GetCellFromPosition(9, 9)); 
+        // There should be 20 mines since: 10 * 10 = 100 * 0.2 = 20.
+        Assert.AreEqual(20, field.mineCount); 
+        // The top right should be in the marked state.
+        Assert.AreEqual(Cell.State.Marked, cell?.state);
+
+        #endregion
     }
 }
