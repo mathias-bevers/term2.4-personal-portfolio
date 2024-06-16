@@ -14,6 +14,8 @@ namespace MineSweeper
         public int mineCount { get; private set; }
         public Transform cachedTransform { get; private set; }
 
+        public event Action<bool> gameEndedEvent; 
+
         private Cell[,] grid;
         private int gridSize;
         private int openCells;
@@ -107,13 +109,15 @@ namespace MineSweeper
             }
         }
 
-        private void OnCellRevealed()
+        private void OnCellRevealed(bool isBomb)
         {
+            if (isBomb) { gameEndedEvent?.Invoke(false); }
+            
             openCells++;
 
             if (openCells < gridSize - mineCount) { return; }
 
-            throw new NotImplementedException("Win condition is not implemented");
+            gameEndedEvent?.Invoke(true);
         }
     }
 }
