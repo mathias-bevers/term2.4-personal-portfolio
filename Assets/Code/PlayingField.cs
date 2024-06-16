@@ -10,13 +10,15 @@ namespace MineSweeper
     {
         [field: SerializeField, Range(10, 45)] public int minePercentage { get; set; }
         [SerializeField] private int scale;
-        private int gridSize => gridDimensions.x * gridDimensions.y;
 
         public int mineCount { get; private set; }
         public Transform cachedTransform { get; private set; }
 
-        private Cell[,] grid;
+        public event Action<bool> gameEndedEvent; 
 
+        private Cell[,] grid;
+        private int gridSize;
+        private int openCells;
         private Vector2Int gridDimensions;
 
 
@@ -72,6 +74,7 @@ namespace MineSweeper
             if (scale.HasValue) { this.scale = scale.Value; }
 
             gridDimensions = Vector2Int.RoundToInt(cachedTransform.lossyScale * this.scale);
+            gridSize = gridDimensions.x * gridDimensions.y;
 
             cachedTransform.RemoveAllChildren();
 
@@ -91,6 +94,7 @@ namespace MineSweeper
                 Cell cell = Cell.Create(this, new Vector2Int(x, y), worldPosition, cellSize, isBomb);
 
                 grid[x, y] = cell;
+                cell.revealedEvent += OnCellRevealed;
             }
 
             for (int y = 0; y < gridDimensions.y; ++y)
@@ -98,11 +102,22 @@ namespace MineSweeper
             {
                 Cell cell = GetCellFromPosition(x, y);
 
-                if (cell.isBomb) { continue; }
+                if (ReferenceEquals(null, cell) || cell.isBomb) { continue; }
 
                 Cell[] neighbors = GetNeighbors(x, y);
                 cell.SetNearBombCount(neighbors.Count(neighbor => neighbor.isBomb));
             }
+        }
+
+        private void OnCellRevealed(bool isBomb)
+        {
+            if (isBomb) { gameEndedEvent?.Invoke(false); }
+            
+            openCells++;
+
+            if (openCells < gridSize - mineCount) { return; }
+
+            gameEndedEvent?.Invoke(true);
         }
     }
 }

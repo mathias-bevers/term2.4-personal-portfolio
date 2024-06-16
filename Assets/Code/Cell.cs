@@ -8,6 +8,8 @@ namespace MineSweeper
     [RequireComponent(typeof(SpriteRenderer))]
     public class Cell : MonoBehaviour, IPointerClickHandler
     {
+        public enum State { Closed, Opened, Marked }
+
         [SerializeField, Expandable] private CellSpriteSet spriteSet;
 
         public bool isBomb { get; private set; }
@@ -34,6 +36,8 @@ namespace MineSweeper
                 default: throw new ArgumentOutOfRangeException();
             }
         }
+
+        public event Action<bool> revealedEvent;
 
         public static Cell Create(PlayingField parent, Vector2Int gridPosition, Vector2 worldPosition, Vector2 scale,
             bool isBomb)
@@ -67,15 +71,11 @@ namespace MineSweeper
 
             state = State.Opened;
 
-            if (isBomb)
-            {
-                renderer.sprite = spriteSet.exploded;
-                throw new NotImplementedException("GameOver not implemented");
-            }
+            renderer.sprite = isBomb ? spriteSet.exploded : spriteSet.numberSprites[neighborCount];
+            
+            revealedEvent?.Invoke(isBomb);
 
-            renderer.sprite = spriteSet.numberSprites[neighborCount];
-
-            if (neighborCount != 0) { return; }
+            if (isBomb || neighborCount != 0) { return; }
 
             foreach (Cell neighbor in parent.GetNeighbors(gridPosition.x, gridPosition.y, true))
             {
@@ -99,7 +99,5 @@ namespace MineSweeper
                 default: throw new ArgumentOutOfRangeException();
             }
         }
-
-        public enum State { Closed, Opened, Marked }
     }
 }
