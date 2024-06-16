@@ -8,13 +8,16 @@ namespace MineSweeper
 {
     public class PlayingField : MonoBehaviour
     {
-        [SerializeField] private Vector2Int gridDimensions;
+        [field: SerializeField, Range(10, 45)] public int minePercentage { get; set; }
+        [SerializeField] private int scale;
         private int gridSize => gridDimensions.x * gridDimensions.y;
 
         public int mineCount { get; private set; }
         public Transform cachedTransform { get; private set; }
 
         private Cell[,] grid;
+
+        private Vector2Int gridDimensions;
 
 
         private void Awake()
@@ -64,21 +67,23 @@ namespace MineSweeper
             return grid[x, y];
         }
 
-        public void CreateGrid(Vector2Int? gridDimensions = null)
+        public void CreateGrid(int? scale = null)
         {
-            if (gridDimensions.HasValue) { this.gridDimensions = gridDimensions.Value; }
+            if (scale.HasValue) { this.scale = scale.Value; }
+
+            gridDimensions = Vector2Int.RoundToInt(cachedTransform.lossyScale * this.scale);
 
             cachedTransform.RemoveAllChildren();
 
-            grid = new Cell[this.gridDimensions.x, this.gridDimensions.y];
-            mineCount = Mathf.Max(1, Mathf.RoundToInt(gridSize * 0.1f));
+            grid = new Cell[gridDimensions.x, gridDimensions.y];
+            mineCount = Mathf.Max(1, Mathf.RoundToInt(gridSize * (minePercentage / 100f)));
             int[] mineLocations = Utils.GetRandomInts(mineCount, gridSize);
 
-            Vector2 cellSize = new(1f / this.gridDimensions.x, 1f / this.gridDimensions.y);
+            Vector2 cellSize = new(1f / gridDimensions.x, 1f / gridDimensions.y);
             Vector2 topRight = new(-(0.5f - cellSize.x * 0.5f), 0.5f - cellSize.y * 0.5f);
 
-            for (int x = 0; x < this.gridDimensions.x; ++x)
-            for (int y = 0; y < this.gridDimensions.y; ++y)
+            for (int x = 0; x < gridDimensions.x; ++x)
+            for (int y = 0; y < gridDimensions.y; ++y)
             {
                 Vector2 worldPosition = topRight + new Vector2(cellSize.x * x, -(cellSize.y * y));
                 bool isBomb = Array.IndexOf(mineLocations, PositionToOneDimension(x, y)) >= 0;
@@ -88,8 +93,8 @@ namespace MineSweeper
                 grid[x, y] = cell;
             }
 
-            for (int y = 0; y < this.gridDimensions.y; ++y)
-            for (int x = 0; x < this.gridDimensions.x; ++x)
+            for (int y = 0; y < gridDimensions.y; ++y)
+            for (int x = 0; x < gridDimensions.x; ++x)
             {
                 Cell cell = GetCellFromPosition(x, y);
 

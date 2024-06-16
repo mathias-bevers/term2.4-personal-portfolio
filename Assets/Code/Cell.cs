@@ -11,11 +11,11 @@ namespace MineSweeper
         [SerializeField, Expandable] private CellSpriteSet spriteSet;
 
         public bool isBomb { get; private set; }
+        public State state { get; private set; }
 
         private int neighborCount;
         private PlayingField parent;
         private new SpriteRenderer renderer;
-        private State state;
         private Transform cachedTransform;
         private Vector2Int gridPosition;
 
@@ -85,9 +85,21 @@ namespace MineSweeper
 
         private void MarkSpace()
         {
-            throw new NotImplementedException();
+            switch (state)
+            {
+                case State.Opened: return;
+                case State.Marked:
+                    renderer.sprite = spriteSet.unopened;
+                    state = State.Closed;
+                    break;
+                case State.Closed:
+                    renderer.sprite = spriteSet.flag;
+                    state = State.Marked;
+                    break;
+                default: throw new ArgumentOutOfRangeException();
+            }
         }
 
-        private enum State { Closed, Opened, Marked }
+        public enum State { Closed, Opened, Marked }
     }
 }
