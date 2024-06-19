@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22b8f3a70ca5f2c1bac92dce1a9689d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <minePercentage>k__BackingField: 10
+  <minePercentage>k__BackingField: 20
   scale: 1
 --- !u!212 &6702907385065118261
 SpriteRenderer:

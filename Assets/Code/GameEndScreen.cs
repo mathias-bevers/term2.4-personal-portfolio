@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,16 +12,16 @@ namespace MineSweeper
 
         [SerializeField] private Button newGameButton;
         [SerializeField] private Button quitButton;
-        
+
         private Animator animationController;
 
         public void GameEnded(bool hasWon)
         {
             animationController = GetComponent<Animator>();
-            
+
             newGameButton.onClick.AddListener(Restart);
             quitButton.onClick.AddListener(Exit);
-            
+
             animationController.SetTrigger(GameEnd);
             animationController.SetBool(HasWon, hasWon);
         }
@@ -30,17 +29,23 @@ namespace MineSweeper
         private void Restart()
         {
             GameManager.instance.CreateGame();
-            
+
             newGameButton.onClick.RemoveAllListeners();
             quitButton.onClick.RemoveAllListeners();
-            
+
             animationController.SetTrigger(GameRestart);
             gameObject.SetActive(false);
         }
 
         private void Exit()
         {
-            throw new NotImplementedException("This needs to go to the main menu!");
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+
+
             newGameButton.onClick.RemoveAllListeners();
             quitButton.onClick.RemoveAllListeners();
         }

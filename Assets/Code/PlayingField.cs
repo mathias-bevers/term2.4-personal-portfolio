@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using MineSweeper.Tools;
+using UnityEngine;
 
 namespace MineSweeper
 {
@@ -13,8 +13,6 @@ namespace MineSweeper
 
         public int mineCount { get; private set; }
         public Transform cachedTransform { get; private set; }
-
-        public event Action<bool> gameEndedEvent; 
 
         private Cell[,] grid;
         private int gridSize;
@@ -27,8 +25,10 @@ namespace MineSweeper
             cachedTransform = transform;
         }
 
-        private int PositionToOneDimension(int row, int column) =>
-            gridDimensions.x * row + column;
+        public event Action<bool> gameEndedEvent;
+
+        public int PositionToOneDimension(int row, int column) =>
+            gridDimensions.x * column + row;
 
 
         public Cell[] GetNeighbors(int x, int y, bool excludeDiagonal = false)
@@ -42,9 +42,7 @@ namespace MineSweeper
                 {
                     if (i == 0 && ii == 0) { continue; }
 
-                    Cell? neighbor = GetCellFromPosition(x + i, y + ii);
-
-                    neighbors.Add(neighbor);
+                    neighbors.Add(GetCellFromPosition(x + i, y + ii));
                 }
             }
             else
@@ -58,7 +56,7 @@ namespace MineSweeper
             neighbors.RemoveAll(neighbor => ReferenceEquals(null, neighbor));
             return neighbors.ToArray();
         }
-        
+
         public Cell? GetCellFromPosition(int x, int y)
         {
             if (x < 0 || x >= grid.GetLength(0)) { return null; }
@@ -79,7 +77,9 @@ namespace MineSweeper
 
             grid = new Cell[gridDimensions.x, gridDimensions.y];
             mineCount = Mathf.Max(1, Mathf.RoundToInt(gridSize * (minePercentage / 100f)));
-            int[] mineLocations = Utils.GetRandomInts(mineCount, gridSize);
+            int[] mineLocations = Utils.GetRandomInts(mineCount, gridSize, sorted: true);
+
+            Debug.Log($"The {mineCount} bomb locations are: {string.Join(',',mineLocations)}");
 
             Vector2 cellSize = new(1f / gridDimensions.x, 1f / gridDimensions.y);
             Vector2 topRight = new(-(0.5f - cellSize.x * 0.5f), 0.5f - cellSize.y * 0.5f);
@@ -102,16 +102,19 @@ namespace MineSweeper
                 Cell cell = GetCellFromPosition(x, y);
 
                 if (ReferenceEquals(null, cell) || cell.isBomb) { continue; }
-
-                Cell[] neighbors = GetNeighbors(x, y);
-                cell.SetNearBombCount(neighbors.Count(neighbor => neighbor.isBomb));
+                
+                cell.SetNearBombCount(GetNeighbors(x, y).Count(neighbor => neighbor.isBomb));
             }
         }
 
         private void OnCellRevealed(bool isBomb)
         {
-            if (isBomb) { gameEndedEvent?.Invoke(false); }
-            
+            if (isBomb)
+            {
+                gameEndedEvent?.Invoke(false);
+                return;
+            }
+
             openCells++;
 
             if (openCells < gridSize - mineCount) { return; }

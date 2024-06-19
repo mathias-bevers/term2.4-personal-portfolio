@@ -7,13 +7,22 @@ namespace MineSweeper
     {
         [SerializeField] private TextMeshProUGUI minesLeftText;
         [SerializeField] private TextMeshProUGUI timePlayed;
-
-        private int markedCells;
+        
         private float timer;
+        private int markedCells;
 
-        public void SetMinesLeft(int minesLeft)
+        private void Update()
         {
-            minesLeftText.SetText($"{GameManager.instance.field.mineCount:000}");
+            UpdateTimer();
+        }
+
+        public void Initialize(int minesLeft)
+        {
+            timer = 0;
+            markedCells = 0;
+            
+            minesLeftText.SetText($"{minesLeft:000}");
+            gameObject.SetActive(true);
         }
 
         public void UpdateMinesLeft(bool increase)
@@ -22,17 +31,12 @@ namespace MineSweeper
             minesLeftText.SetText($"{GameManager.instance.field.mineCount - markedCells:000}");
         }
 
-        private void Update()
-        {
-            UpdateTimer();
-        }
-
         private void UpdateTimer()
         {
             timer += Time.deltaTime;
-            
+
             int minutes = Mathf.FloorToInt(timer / 60f);
-            int seconds = Mathf.FloorToInt(timer - (minutes * 60));
+            int seconds = Mathf.FloorToInt(timer - minutes * 60);
             timePlayed.SetText($"{minutes:00}:{seconds:00}");
         }
     }

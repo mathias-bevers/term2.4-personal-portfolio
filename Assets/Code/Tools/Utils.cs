@@ -15,7 +15,7 @@ namespace MineSweeper.Tools
             }
         }
 
-        public static int[] GetRandomInts(int size, int max, int min = 0)
+        public static int[] GetRandomInts(int size, int max, int min = 0, bool sorted = false)
         {
             int[] array = new int [size];
             for (int i = 0; i < array.Length; ++i)
@@ -27,6 +27,8 @@ namespace MineSweeper.Tools
                 array[i] = value;
             }
 
+            if(sorted) { Array.Sort(array); }
+            
             return array;
         }
     }
