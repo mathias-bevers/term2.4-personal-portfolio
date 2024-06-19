@@ -1,4 +1,6 @@
+using NaughtyAttributes;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace MineSweeper
@@ -12,6 +14,7 @@ namespace MineSweeper
 
         [SerializeField] private Button newGameButton;
         [SerializeField] private Button quitButton;
+        [Scene, SerializeField] private int sceneToLoad;
 
         private Animator animationController;
 
@@ -37,17 +40,6 @@ namespace MineSweeper
             gameObject.SetActive(false);
         }
 
-        private void Exit()
-        {
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-#else
-            Application.Quit();
-#endif
-
-
-            newGameButton.onClick.RemoveAllListeners();
-            quitButton.onClick.RemoveAllListeners();
-        }
+        private void Exit() => SceneManager.LoadScene(sceneToLoad);
     }
 }

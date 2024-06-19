@@ -7,7 +7,7 @@ namespace MineSweeper
     {
         [SerializeField] private TextMeshProUGUI minesLeftText;
         [SerializeField] private TextMeshProUGUI timePlayed;
-        
+
         private float timer;
         private int markedCells;
 
@@ -20,7 +20,7 @@ namespace MineSweeper
         {
             timer = 0;
             markedCells = 0;
-            
+
             minesLeftText.SetText($"{minesLeft:000}");
             gameObject.SetActive(true);
         }
