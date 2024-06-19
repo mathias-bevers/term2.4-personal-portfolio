@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace MineSweeper
+namespace MineSweeper.Tools
 {
     public static class Utils
     {
@@ -29,5 +29,10 @@ namespace MineSweeper
 
             return array;
         }
+    }
+
+    public class ComponentNotFoundException<T> : Exception where T : Component
+    {
+        public ComponentNotFoundException() : base($"Could not find the component: {typeof(T).Name}") { }
     }
 }

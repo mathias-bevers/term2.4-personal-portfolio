@@ -1,30 +1,38 @@
-using System;
+using MineSweeper.Tools;
 using UnityEngine;
 
 namespace MineSweeper
 {
     public class GameManager : Singleton<GameManager>
     {
-        [field: SerializeField] public PlayingField field {get; private set;}
-       
-        
-        [SerializeField] private Animator gameEndController;
-        
-        private static readonly int GameEnd = Animator.StringToHash("GameEnd");
-        private static readonly int HasWon = Animator.StringToHash("HasWon");
+        public PlayingField field { get; private set; }
+        private GameEndScreen gameEndScreen;
 
-        private void Start()
+        protected override void Awake()
         {
-            field.CreateGrid();
-            field.gameEndedEvent += OnGameEnded;
+            gameEndScreen = FindObjectOfType<GameEndScreen>(true) ??
+                            throw new ComponentNotFoundException<GameEndScreen>();
+            CreateGame();
         }
 
         private void OnGameEnded(bool hasWon)
         {
-            gameEndController.gameObject.SetActive(true);
-            
-            gameEndController.SetTrigger(GameEnd);
-            gameEndController.SetBool(HasWon, hasWon);
+            gameEndScreen.gameObject.SetActive(true);
+            gameEndScreen.GameEnded(hasWon);
+        }
+
+        public void CreateGame()
+        {
+            if (!ReferenceEquals(null, field))
+            {
+                field.gameEndedEvent -= OnGameEnded;
+                Destroy(field.gameObject);
+            }
+
+            field = Instantiate(GameAssets.instance.playingField, Vector2.zero, Quaternion.identity);
+            field.gameEndedEvent += OnGameEnded;
+
+            field.CreateGrid();
         }
     }
 }

@@ -3,7 +3,7 @@ using NaughtyAttributes;
 using UnityEngine;
 using TMPro;
 
-namespace MineSweeper
+namespace MineSweeper.Tools
 {
     public class ResizeTextGroup : MonoBehaviour
     {

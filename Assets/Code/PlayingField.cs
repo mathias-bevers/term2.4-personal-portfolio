@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using UnityEngine;
+using MineSweeper.Tools;
 
 namespace MineSweeper
 {
@@ -42,7 +42,7 @@ namespace MineSweeper
                 {
                     if (i == 0 && ii == 0) { continue; }
 
-                    Cell neighbor = GetCellFromPosition(x + i, y + ii);
+                    Cell? neighbor = GetCellFromPosition(x + i, y + ii);
 
                     neighbors.Add(neighbor);
                 }
@@ -58,9 +58,8 @@ namespace MineSweeper
             neighbors.RemoveAll(neighbor => ReferenceEquals(null, neighbor));
             return neighbors.ToArray();
         }
-
-        [CanBeNull]
-        public Cell GetCellFromPosition(int x, int y)
+        
+        public Cell? GetCellFromPosition(int x, int y)
         {
             if (x < 0 || x >= grid.GetLength(0)) { return null; }
 

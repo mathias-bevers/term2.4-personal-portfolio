@@ -45,3 +45,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <cell>k__BackingField: {fileID: 5959164462880488049, guid: 8aa5b0430a65220ce8d351329b86933f, type: 3}
+  <playingField>k__BackingField: {fileID: 5633541833639020731, guid: bd3439f91827b63f0b6240d15a48385c, type: 3}

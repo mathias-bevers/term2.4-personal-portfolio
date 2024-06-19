@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace MineSweeper
+namespace MineSweeper.Tools
 {
     public class GameAssets : MonoBehaviour
     {
@@ -9,5 +9,6 @@ namespace MineSweeper
             Instantiate(Resources.Load("GameAssets") as GameObject).GetComponent<GameAssets>();
 
         [field: SerializeField] public Cell cell { get; private set; }
+        [field: SerializeField] public PlayingField playingField { get; private set; }
     }
 }

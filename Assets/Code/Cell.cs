@@ -2,6 +2,7 @@ using System;
 using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using MineSweeper.Tools;
 
 namespace MineSweeper
 {
