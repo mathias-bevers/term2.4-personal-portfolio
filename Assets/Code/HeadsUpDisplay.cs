@@ -1,5 +1,7 @@
+using NaughtyAttributes;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MineSweeper
 {
@@ -7,6 +9,8 @@ namespace MineSweeper
     {
         [SerializeField] private TextMeshProUGUI minesLeftText;
         [SerializeField] private TextMeshProUGUI timePlayed;
+        [SerializeField] private Button backButton;
+        [Scene, SerializeField] private int sceneToLoad;
 
         private float timer;
         private int markedCells;
@@ -14,6 +18,16 @@ namespace MineSweeper
         private void Update()
         {
             UpdateTimer();
+        }
+
+        private void OnEnable()
+        {
+            backButton.onClick.AddListener(() => UnityEngine.SceneManagement.SceneManager.LoadScene(sceneToLoad));
+        }
+
+        private void OnDisable()
+        {
+            backButton.onClick.RemoveAllListeners();
         }
 
         public void Initialize(int minesLeft)
