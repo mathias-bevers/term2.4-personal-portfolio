@@ -2,6 +2,7 @@ using System;
 using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using MineSweeper.Tools;
 
 namespace MineSweeper
 {
@@ -77,7 +78,7 @@ namespace MineSweeper
 
             if (isBomb || neighborCount != 0) { return; }
 
-            foreach (Cell neighbor in parent.GetNeighbors(gridPosition.x, gridPosition.y, true))
+            foreach (Cell neighbor in parent.GetNeighbors(gridPosition.x, gridPosition.y))
             {
                 neighbor.OpenSpace();
             }
@@ -91,10 +92,12 @@ namespace MineSweeper
                 case State.Marked:
                     renderer.sprite = spriteSet.unopened;
                     state = State.Closed;
+                    GameManager.instance.hud.UpdateMinesLeft(false);
                     break;
                 case State.Closed:
                     renderer.sprite = spriteSet.flag;
                     state = State.Marked;
+                    GameManager.instance.hud.UpdateMinesLeft(true);
                     break;
                 default: throw new ArgumentOutOfRangeException();
             }

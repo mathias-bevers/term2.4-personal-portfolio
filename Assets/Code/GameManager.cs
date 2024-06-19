@@ -1,30 +1,45 @@
-using System;
+using MineSweeper.Tools;
 using UnityEngine;
 
 namespace MineSweeper
 {
     public class GameManager : Singleton<GameManager>
     {
-        [field: SerializeField] public PlayingField field {get; private set;}
-       
+        public PlayingField field { get; private set; }
+        public HeadsUpDisplay hud { get; private set; }
         
-        [SerializeField] private Animator gameEndController;
+        private GameEndScreen gameEndScreen;
         
-        private static readonly int GameEnd = Animator.StringToHash("GameEnd");
-        private static readonly int HasWon = Animator.StringToHash("HasWon");
-
-        private void Start()
+        protected override void Awake()
         {
-            field.CreateGrid();
-            field.gameEndedEvent += OnGameEnded;
+            hud = FindObjectOfType<HeadsUpDisplay>(true) ?? throw new ComponentNotFoundException<HeadsUpDisplay>();
+            gameEndScreen = FindObjectOfType<GameEndScreen>(true) ??
+                            throw new ComponentNotFoundException<GameEndScreen>();
+            
+            CreateGame();
         }
 
         private void OnGameEnded(bool hasWon)
         {
-            gameEndController.gameObject.SetActive(true);
+            hud.gameObject.SetActive(false);
             
-            gameEndController.SetTrigger(GameEnd);
-            gameEndController.SetBool(HasWon, hasWon);
+            gameEndScreen.gameObject.SetActive(true);
+            gameEndScreen.GameEnded(hasWon);
+        }
+
+        public void CreateGame()
+        {
+            if (!ReferenceEquals(null, field))
+            {
+                field.gameEndedEvent -= OnGameEnded;
+                Destroy(field.gameObject);
+            }
+
+            field = Instantiate(GameAssets.instance.playingField, Vector2.zero, Quaternion.identity);
+            field.CreateGrid();
+            field.gameEndedEvent += OnGameEnded;
+            
+            hud.Initialize(field.mineCount);
         }
     }
 }
