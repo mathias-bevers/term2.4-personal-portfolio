@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 556d8c58ead0472e9b7dd963ff68cb61, type: 3}
+  m_Name: Sprites2000
+  m_EditorClassIdentifier: 
+  <unopened>k__BackingField: {fileID: -2086571847, guid: 640abea14565ee84ca4164c16ba18ec7, type: 3}
+  <mine>k__BackingField: {fileID: 1549530562, guid: 640abea14565ee84ca4164c16ba18ec7, type: 3}
+  <exploded>k__BackingField: {fileID: -751338837, guid: 640abea14565ee84ca4164c16ba18ec7, type: 3}
+  <flag>k__BackingField: {fileID: 864592728, guid: 640abea14565ee84ca4164c16ba18ec7, type: 3}
+  <invalidFlag>k__BackingField: {fileID: -1240286908, guid: 640abea14565ee84ca4164c16ba18ec7, type: 3}
+  numberSprites:
+  - {fileID: 211195966, guid: 640abea14565ee84ca4164c16ba18ec7, type: 3}
+  - {fileID: 799311740, guid: 640abea14565ee84ca4164c16ba18ec7, type: 3}
+  - {fileID: -12980022, guid: 640abea14565ee84ca4164c16ba18ec7, type: 3}
+  - {fileID: 618637229, guid: 640abea14565ee84ca4164c16ba18ec7, type: 3}
+  - {fileID: 1421254821, guid: 640abea14565ee84ca4164c16ba18ec7, type: 3}
+  - {fileID: 1769600522, guid: 640abea14565ee84ca4164c16ba18ec7, type: 3}
+  - {fileID: 772127477, guid: 640abea14565ee84ca4164c16ba18ec7, type: 3}
+  - {fileID: 117525749, guid: 640abea14565ee84ca4164c16ba18ec7, type: 3}
+  - {fileID: 1280933436, guid: 640abea14565ee84ca4164c16ba18ec7, type: 3}
