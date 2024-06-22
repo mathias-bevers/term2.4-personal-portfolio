@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using MineSweeper.Tools;
@@ -9,6 +10,7 @@ namespace MineSweeper
     public class PlayingField : MonoBehaviour
     {
         [field: SerializeField, Range(10, 45)] public int minePercentage { get; set; }
+        [SerializeField] private float revealDelay = 0.25f;
         [SerializeField] private int scale;
 
         public int mineCount { get; private set; }
@@ -101,9 +103,19 @@ namespace MineSweeper
             {
                 Cell cell = GetCellFromPosition(x, y);
 
-                if (ReferenceEquals(null, cell) || cell.isBomb) { continue; }
+                if (ReferenceEquals(null, cell) || cell.isMine) { continue; }
                 
-                cell.SetNearBombCount(GetNeighbors(x, y).Count(neighbor => neighbor.isBomb));
+                cell.SetNearBombCount(GetNeighbors(x, y).Count(neighbor => neighbor.isMine));
+            }
+        }
+
+        public IEnumerator RevealAll()
+        {
+            for (int y = 0; y < grid.GetLength(1); ++y)
+            for (int x = 0; x < grid.GetLength(0); ++x)
+            {
+                bool hasBeenRevealed = grid[x,y].RevealCell();
+                yield return new WaitForSeconds(hasBeenRevealed ? revealDelay : 0);
             }
         }
 

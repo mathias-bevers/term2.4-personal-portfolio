@@ -16,6 +16,7 @@ MonoBehaviour:
   <mine>k__BackingField: {fileID: 1549530562, guid: 640abea14565ee84ca4164c16ba18ec7, type: 3}
   <exploded>k__BackingField: {fileID: -751338837, guid: 640abea14565ee84ca4164c16ba18ec7, type: 3}
   <flag>k__BackingField: {fileID: 864592728, guid: 640abea14565ee84ca4164c16ba18ec7, type: 3}
+  <invalidFlag>k__BackingField: {fileID: -1240286908, guid: 640abea14565ee84ca4164c16ba18ec7, type: 3}
   numberSprites:
   - {fileID: 211195966, guid: 640abea14565ee84ca4164c16ba18ec7, type: 3}
   - {fileID: 799311740, guid: 640abea14565ee84ca4164c16ba18ec7, type: 3}

@@ -22,6 +22,8 @@ namespace MineSweeper
         private void OnGameEnded(bool hasWon)
         {
             hud.gameObject.SetActive(false);
+
+            StartCoroutine(field.RevealAll());
             
             gameEndScreen.gameObject.SetActive(true);
             gameEndScreen.GameEnded(hasWon);

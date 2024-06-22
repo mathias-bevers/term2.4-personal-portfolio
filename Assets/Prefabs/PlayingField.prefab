@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <minePercentage>k__BackingField: 20
+  revealDelay: 0.025
   scale: 3
 --- !u!212 &6702907385065118261
 SpriteRenderer:
