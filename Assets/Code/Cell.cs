@@ -1,8 +1,8 @@
 using System;
+using MineSweeper.Tools;
 using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using MineSweeper.Tools;
 
 namespace MineSweeper
 {
@@ -13,7 +13,7 @@ namespace MineSweeper
 
         [SerializeField, Expandable] private CellSpriteSet spriteSet;
 
-        public bool isBomb { get; private set; }
+        public bool isMine { get; private set; }
         public State state { get; private set; }
 
         private int neighborCount;
@@ -28,10 +28,10 @@ namespace MineSweeper
             switch (eventData.button)
             {
                 case PointerEventData.InputButton.Left:
-                    OpenSpace();
+                    OpenCell();
                     break;
                 case PointerEventData.InputButton.Right:
-                    MarkSpace();
+                    MarkCell();
                     break;
                 case PointerEventData.InputButton.Middle: break;
                 default: throw new ArgumentOutOfRangeException();
@@ -54,7 +54,7 @@ namespace MineSweeper
             bool isBomb)
         {
             this.parent = parent;
-            this.isBomb = isBomb;
+            isMine = isBomb;
             this.gridPosition = gridPosition;
 
             cachedTransform.SetParent(parent.cachedTransform);
@@ -66,25 +66,33 @@ namespace MineSweeper
 
         public void SetNearBombCount(int neighborCount) => this.neighborCount = neighborCount;
 
-        private void OpenSpace()
+        private void OpenCell()
         {
             if (state != State.Closed) { return; }
 
             state = State.Opened;
 
-            renderer.sprite = isBomb ? spriteSet.exploded : spriteSet.numberSprites[neighborCount];
-            
-            revealedEvent?.Invoke(isBomb);
+            renderer.sprite = isMine ? spriteSet.exploded : spriteSet.numberSprites[neighborCount];
 
-            if (isBomb || neighborCount != 0) { return; }
+            revealedEvent?.Invoke(isMine);
 
-            foreach (Cell neighbor in parent.GetNeighbors(gridPosition.x, gridPosition.y))
-            {
-                neighbor.OpenSpace();
-            }
+            if (isMine || neighborCount != 0) { return; }
+
+            foreach (Cell neighbor in parent.GetNeighbors(gridPosition.x, gridPosition.y)) { neighbor.OpenCell(); }
         }
 
-        private void MarkSpace()
+        public bool RevealCell()
+        {
+            if (state == State.Opened) { return false; }
+
+            if (isMine) { renderer.sprite = spriteSet.mine; }
+            else if (state == State.Marked) { renderer.sprite = spriteSet.invalidFlag; }
+            else { renderer.sprite = spriteSet.numberSprites[neighborCount]; }
+
+            return true;
+        }
+
+        private void MarkCell()
         {
             switch (state)
             {

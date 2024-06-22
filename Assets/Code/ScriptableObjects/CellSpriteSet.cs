@@ -10,6 +10,7 @@ namespace MineSweeper
         [field: SerializeField] public Sprite mine { get; private set; }
         [field: SerializeField] public Sprite exploded { get; private set; }
         [field: SerializeField] public Sprite flag { get; private set; }
+        [field: SerializeField] public Sprite invalidFlag { get; private set; }
 
         [field: SerializeField] public Sprite[] numberSprites;
     }
