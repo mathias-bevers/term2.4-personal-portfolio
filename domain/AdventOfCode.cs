@@ -1,20 +1,23 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
+using System.Text.Json;
 
 namespace domain;
 
 public class AdventOfCode
 {
     public int runningDaysCount { get; private set; }
-    public string fileDirectory { get; private set; }
-    
+    public string fileDirectory { get; }
+
     private readonly List<IDay> days;
-    
-    //TODO: save output data to file 
+
+    private readonly Dictionary<DateTime, DayRecord> results;
 
     public AdventOfCode(string fileDirectory)
     {
         this.fileDirectory = fileDirectory;
         days = new List<IDay>();
+        results = new Dictionary<DateTime, DayRecord>();
 
         foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
         {
@@ -27,20 +30,40 @@ public class AdventOfCode
 
             days.Add(day);
         }
-        
-        days.Sort((a,b) => a.date.CompareTo(b.date));
+
+        days.Sort((a, b) => a.date.CompareTo(b.date));
         runningDaysCount = days.Count;
     }
 
 
     public void Run()
     {
+        Stopwatch stopwatch = new();
         foreach (IDay day in days)
         {
+            stopwatch.Restart();
             day.Initialize(fileDirectory);
+            long initTime = stopwatch.ElapsedMilliseconds;
 
-            string starOne = day.StarOne();
-            string starTwo = day.StarTwo();
+            stopwatch.Restart();
+            string result = day.StarOne();
+            DayRecord.StarRecord one = new(stopwatch.ElapsedMilliseconds, result);
+
+            stopwatch.Restart();
+            result = day.StarTwo();
+            DayRecord.StarRecord two = new(stopwatch.ElapsedMilliseconds, result);
+
+            results.Add(day.date, new DayRecord(initTime, one, two));
         }
+
+        SaveResults();
+    }
+
+    private void SaveResults()
+    {
+        string outputFile = Path.Join(fileDirectory, "output.json");
+
+        using FileStream fileStream = File.Create(outputFile);
+        JsonSerializer.Serialize(fileStream, results);
     }
 }
