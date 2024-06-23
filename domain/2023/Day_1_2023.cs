@@ -12,7 +12,19 @@ public class Day_1_2023 : IDay
 
     public string StarOne()
     {
-        return data[0];
+        int sum = 0;
+
+        foreach (string line in data)
+        {
+            string number = string.Empty;
+
+            number += line.First(char.IsDigit);
+            number += line.Last(char.IsDigit);
+            
+            sum += int.Parse(number);
+        }
+
+        return sum.ToString();
     }
 
     public string StarTwo()
