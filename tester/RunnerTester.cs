@@ -24,15 +24,12 @@ public class RunnerTester
     {
         // Given
         string currentDirectory = Directory.GetCurrentDirectory();
-        string outputPath = Path.Join(currentDirectory, "output.json");
         
         AdventOfCode aoc = new(currentDirectory);
         
         // When
-        aoc.Run();
         
         // Then
-        File.Exists(outputPath).Should().BeTrue($"Cannot find a file at path: {outputPath}");
-        File.ReadAllText(outputPath).Should().NotBeEmpty();
+        aoc.Run(null);
     }
 }

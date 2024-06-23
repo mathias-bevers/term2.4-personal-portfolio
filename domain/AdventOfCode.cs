@@ -9,13 +9,13 @@ public class AdventOfCode
     public int runningDaysCount { get; private set; }
     public string workingDirectory { get; }
 
-    private readonly List<IDay> days;
+    private readonly IDay[] days;
     
 
     public AdventOfCode(string workingDirectory)
     {
         this.workingDirectory = workingDirectory;
-        days = new List<IDay>();
+        List<IDay> temp = [];
 
         foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
         {
@@ -26,15 +26,21 @@ public class AdventOfCode
                 throw new InvalidCastException($"Something went wrong with activating the {type.Name} class as a day");
             }
 
-            days.Add(day);
+            temp.Add(day);
         }
 
-        days.Sort((a, b) => a.date.CompareTo(b.date));
-        runningDaysCount = days.Count;
+        temp.Sort((a, b) => a.date.CompareTo(b.date));
+        days = temp.ToArray();
+        
+        runningDaysCount = days.Length;
     }
 
 
-    public IEnumerable<(DateTime, DayRecord)> Run()
+    /// <summary>
+    /// The <c>Run</c> method is used to run all the <see cref="IDay"/> instances in the 
+    /// </summary>
+    /// <param name="callBack"></param>
+    public void Run(Action<DateTime, DayRecord>? callBack)
     {
         Stopwatch stopwatch = new();
         string inputDirectory = Path.Join(workingDirectory, "inputs");
@@ -53,7 +59,9 @@ public class AdventOfCode
             result = day.StarTwo();
             DayRecord.StarRecord two = new(stopwatch.ElapsedMilliseconds, result);
 
-            yield return (day.date, new DayRecord(initTime, one, two));
+            if (ReferenceEquals(null, callBack)) { return; }
+            
+            callBack(day.date, new DayRecord(initTime, one, two));
         }
     }
 }
