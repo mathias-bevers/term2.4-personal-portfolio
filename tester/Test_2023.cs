@@ -21,6 +21,6 @@ public class Test_2023
         
         // Then
         dayS1.StarOne().Should().Be("142");
-        dayS1.StarTwo().Should().Be("281");
+        dayS2.StarTwo().Should().Be("281");
     }
 }
