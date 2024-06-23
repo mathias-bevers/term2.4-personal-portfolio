@@ -15,7 +15,7 @@ public class RunnerTester
         AdventOfCode aoc = new(currentDirectory);
         
         // Then
-        aoc.fileDirectory.Should().Be(currentDirectory);
+        aoc.workingDirectory.Should().Be(currentDirectory);
         aoc.runningDaysCount.Should().Be(1);
     }
 
