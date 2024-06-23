@@ -6,26 +6,9 @@ const int PADDING = 20;
 
 string currentDirectory = Directory.GetCurrentDirectory();
 AdventOfCode aoc = new(currentDirectory);
-aoc.Run();
-
-string outputFile = Path.Join(currentDirectory, "output.json");
-string jsonText = File.ReadAllText(outputFile);
-if (!File.Exists(outputFile))
-{
-    Console.WriteLine($"ERR: could not find the file: {outputFile}");
-    return;
-}
-
-Dictionary<DateTime, DayRecord>? results = JsonSerializer.Deserialize<Dictionary<DateTime, DayRecord>>(jsonText);
-
-if (ReferenceEquals(null, results) || results.Values.Count < 1)
-{
-    Console.WriteLine($"ERR: no (valid) entries in the output file: {outputFile}");
-    return;
-}
 
 StringBuilder stringBuilder = new();
-foreach ((DateTime date, DayRecord record) in results)
+foreach ((DateTime date, DayRecord record) in aoc.Run())
 {
     stringBuilder.Append(new string('\u2014', PADDING * 4));
     stringBuilder.AppendLine(date.Date.ToString("dddd, dd-MMM-yyyy"));

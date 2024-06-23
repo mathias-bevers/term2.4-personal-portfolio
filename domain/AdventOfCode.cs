@@ -10,14 +10,12 @@ public class AdventOfCode
     public string workingDirectory { get; }
 
     private readonly List<IDay> days;
-
-    private readonly Dictionary<DateTime, DayRecord> results;
+    
 
     public AdventOfCode(string workingDirectory)
     {
         this.workingDirectory = workingDirectory;
         days = new List<IDay>();
-        results = new Dictionary<DateTime, DayRecord>();
 
         foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
         {
@@ -36,7 +34,7 @@ public class AdventOfCode
     }
 
 
-    public void Run()
+    public IEnumerable<(DateTime, DayRecord)> Run()
     {
         Stopwatch stopwatch = new();
         string inputDirectory = Path.Join(workingDirectory, "inputs");
@@ -55,17 +53,7 @@ public class AdventOfCode
             result = day.StarTwo();
             DayRecord.StarRecord two = new(stopwatch.ElapsedMilliseconds, result);
 
-            results.Add(day.date, new DayRecord(initTime, one, two));
+            yield return (day.date, new DayRecord(initTime, one, two));
         }
-
-        SaveResults();
-    }
-
-    private void SaveResults()
-    {
-        string outputFile = Path.Join(workingDirectory, "output.json");
-
-        using FileStream fileStream = File.Create(outputFile);
-        JsonSerializer.Serialize(fileStream, results);
     }
 }

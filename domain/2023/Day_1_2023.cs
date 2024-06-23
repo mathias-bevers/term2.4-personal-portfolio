@@ -33,6 +33,7 @@ public class Day_1_2023 : IDay
     public string StarTwo()
     {
         Regex regex = new("[1-9]|one|two|three|four|five|six|seven|eight|nine");
+        Regex reverse = new("[1-9]|one|two|three|four|five|six|seven|eight|nine", RegexOptions.RightToLeft);
         Dictionary<string, int> spelledOut = new()
         {
             { "one", 1 },
@@ -50,12 +51,10 @@ public class Day_1_2023 : IDay
 
         foreach (string line in data)
         {
-            MatchCollection matches = regex.Matches(line);
-
-            string first = matches.First().Value;
+            string first = regex.Matches(line).First().Value;
             if (first.Length > 1) { first = spelledOut[first].ToString(); }
 
-            string last = matches.Last().Value;
+            string last = reverse.Matches(line).First().Value;
             if (last.Length > 1) { last = spelledOut[last].ToString(); }
 
             sum += int.Parse(first + last);
