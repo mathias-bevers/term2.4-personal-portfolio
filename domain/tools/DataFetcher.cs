@@ -2,16 +2,17 @@ namespace domain;
 
 public static class DataFetcher
 {
-    public static string[] AsLines(this IDay day, string directory)
+    public static string[] DataAsLines(this IDay day, string input, IDay.InputMode inputMode)
     {
-        string filePath = Path.Join(directory, day.FormatToFileName());
-
-        if (!File.Exists(filePath))
+        if (inputMode == IDay.InputMode.File)
         {
-            throw new FileNotFoundException($"could not find file: {filePath}");
+            string filePath = Path.Join(input, day.FormatToFileName());
+            if (!File.Exists(filePath)) { throw new FileNotFoundException($"could not find file: {filePath}"); }
+
+            input = File.ReadAllText(filePath);
         }
 
-        return File.ReadAllLines(filePath);
+        return input.Split(["\r\n", "\r", "\n"], StringSplitOptions.RemoveEmptyEntries);
     }
 
     private static string FormatToFileName(this IDay day)
