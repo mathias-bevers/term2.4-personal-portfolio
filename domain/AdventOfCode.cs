@@ -7,15 +7,15 @@ namespace domain;
 public class AdventOfCode
 {
     public int runningDaysCount { get; private set; }
-    public string fileDirectory { get; }
+    public string workingDirectory { get; }
 
     private readonly List<IDay> days;
 
     private readonly Dictionary<DateTime, DayRecord> results;
 
-    public AdventOfCode(string fileDirectory)
+    public AdventOfCode(string workingDirectory)
     {
-        this.fileDirectory = fileDirectory;
+        this.workingDirectory = workingDirectory;
         days = new List<IDay>();
         results = new Dictionary<DateTime, DayRecord>();
 
@@ -39,10 +39,12 @@ public class AdventOfCode
     public void Run()
     {
         Stopwatch stopwatch = new();
+        string inputDirectory = Path.Join(workingDirectory, "inputs");
+        
         foreach (IDay day in days)
         {
             stopwatch.Restart();
-            day.Initialize(fileDirectory);
+            day.Initialize(inputDirectory);
             long initTime = stopwatch.ElapsedMilliseconds;
 
             stopwatch.Restart();
@@ -61,7 +63,7 @@ public class AdventOfCode
 
     private void SaveResults()
     {
-        string outputFile = Path.Join(fileDirectory, "output.json");
+        string outputFile = Path.Join(workingDirectory, "output.json");
 
         using FileStream fileStream = File.Create(outputFile);
         JsonSerializer.Serialize(fileStream, results);
