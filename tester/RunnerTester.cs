@@ -9,13 +9,11 @@ public class RunnerTester
     public void InitializeAOC()
     {
         // Given
-        string currentDirectory = Directory.GetCurrentDirectory();
         
         // When
-        AdventOfCode aoc = new(currentDirectory);
+        AdventOfCode aoc = new(new string[]{ "--year", "2023"});
         
         // Then
-        aoc.workingDirectory.Should().Be(currentDirectory);
         aoc.runningDaysCount.Should().Be(1);
     }
 
@@ -23,13 +21,11 @@ public class RunnerTester
     public void RunAOC()
     {
         // Given
-        string currentDirectory = Directory.GetCurrentDirectory();
-        
-        AdventOfCode aoc = new(currentDirectory);
+        AdventOfCode aoc = new([]);
         
         // When
         
         // Then
-        aoc.Run(null);
+        aoc.Run(Directory.GetCurrentDirectory(), null);
     }
 }

@@ -7,9 +7,8 @@ internal static class Program
 
     private static void Main(string[] args)
     {
-        string currentDirectory = Directory.GetCurrentDirectory();
-        AdventOfCode aoc = new(currentDirectory);
-        aoc.Run(OnDayComplete);
+        AdventOfCode aoc = new(args);
+        aoc.Run(Directory.GetCurrentDirectory(), OnDayComplete);
     }
 
     private static void OnDayComplete(DateTime date, DayRecord result)
