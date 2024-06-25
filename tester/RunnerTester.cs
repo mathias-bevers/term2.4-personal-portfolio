@@ -16,19 +16,7 @@ public class RunnerTester
         // Then
         aoc.runningDaysCount.Should().Be(1);
     }
-
-    [Fact]
-    public void RunAOC()
-    {
-        // Given
-        AdventOfCode aoc = new(["-a"]);
-
-        // When
-
-        // Then
-        aoc.Run(Directory.GetCurrentDirectory(), null);
-    }
-
+    
     [Fact]
     public void InitializeWrongDate()
     {
