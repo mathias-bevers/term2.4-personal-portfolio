@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - minesweeper
   pull_request:
     branches: 
       - main
+      - minesweeper
   workflow_dispatch:
 
 jobs:
