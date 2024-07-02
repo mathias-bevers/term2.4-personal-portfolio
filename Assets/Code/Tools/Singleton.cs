@@ -6,6 +6,8 @@ namespace MineSweeper
     public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T>
     {
         public static bool isInitialized => !ReferenceEquals(null, _instance);
+
+        public static T instanceIfInitialized => isInitialized ? _instance : null;
         
         private static T _instance;
         public static T instance
@@ -16,7 +18,7 @@ namespace MineSweeper
                 if (!isInitialized) { _instance = FindObjectOfType<T>(); }
 
                 // Create a new instance.
-                if (ReferenceEquals(null, _instance))
+                if (!isInitialized)
                 {
                     GameObject go = new(typeof(T).Name);
                     _instance = go.AddComponent<T>();
