@@ -100,12 +100,12 @@ namespace MineSweeper
                 case State.Marked:
                     renderer.sprite = spriteSet.unopened;
                     state = State.Closed;
-                    GameManager.instance.hud.UpdateMinesLeft(false);
+                    GameManager.instanceIfInitialized?.hud.UpdateMinesLeft(false);
                     break;
                 case State.Closed:
                     renderer.sprite = spriteSet.flag;
                     state = State.Marked;
-                    GameManager.instance.hud.UpdateMinesLeft(true);
+                    GameManager.instanceIfInitialized?.hud.UpdateMinesLeft(true);
                     break;
                 default: throw new ArgumentOutOfRangeException();
             }
